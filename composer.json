@@ -1,0 +1,32 @@
+{
+    "name": "adevait/power-bi",
+    "type": "library",
+    "license": "MIT",
+    "type": "library",
+    "version": "1.0.0",
+    "keywords": [
+        "Power BI",
+        "PHP",
+        "API"
+    ],
+    "authors": [
+        {
+            "name": "Tosho Trajanov",
+            "email": "trajanov@adevait.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/finder":"3.2",
+        "symfony/process":"3.0.*"
+    },
+    "require-dev" : {
+        "phpunit/phpunit": "^4.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "PowerBi\\": "src/PowerBi/"
+        }
+    }
+}
