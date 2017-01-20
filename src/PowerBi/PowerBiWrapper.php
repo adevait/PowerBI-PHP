@@ -129,11 +129,11 @@ class PowerBiWrapper
      * 
      * @return [type]             [description]
      */
-    public function import($params, $filepath, $name, $overwrite = 0)
+    public function import($params, $filepath, $name, $overwrite = false)
     {
         $command = $this->formatInput($params);
 
-        return $this->parseResponse($this->execute('import -f '.$filepath.' -n '.$name));
+        return $this->parseResponse($this->execute('import -f '.$filepath.' -n '.$name), __FUNCTION__);
     }
 
     /**
@@ -147,7 +147,7 @@ class PowerBiWrapper
     {
         $command = $this->formatInput($params);
 
-        return $this->execute('create-embed-token '.$command);
+        return $this->parseResponse($this->execute('create-embed-token '.$command), __FUNCTION__);
     }
 
     /**
@@ -217,7 +217,7 @@ class PowerBiWrapper
                 break;
 
             case 'import':
-                preg_match("/\[ powerbi \] ID: (.*) \|/", $response, $matchesId);
+                preg_match("/\[ powerbi \] Import ID: (.*)/", $response, $matchesId);
                 return [['id' => $matchesId[1]]];
                 break;
 
@@ -227,13 +227,14 @@ class PowerBiWrapper
                 break;
 
             case 'workspaces':
-
                 // TODO: Fix the RegExp! Doesn't return the first workspace
                 $response = preg_replace('/\[ powerbi \] =+\n(.*)/', '', $response);
                 preg_match_all("/\[ powerbi \] (.*)/", $response, $matchesId);
                 return $matchesId[1];
                 break;
-            
+            case 'createToken':
+                preg_match_all("/\[ powerbi \] Embed Token: (.*)/", $response, $matchesId);
+                return trim(reset($matchesId[1]));
             default:
                 # code...
                 break;
