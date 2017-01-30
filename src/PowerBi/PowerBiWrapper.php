@@ -160,6 +160,7 @@ class PowerBiWrapper
     public function execute($command)
     {
         $process = new Process($this->path.' '.$command, storage_path('powerbi'));
+        $process->setTimeout(6400);
         $process->enableOutput();
         $process->run();
 
