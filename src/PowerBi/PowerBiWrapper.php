@@ -132,8 +132,8 @@ class PowerBiWrapper
     public function import($params, $filepath, $name, $overwrite = false)
     {
         $command = $this->formatInput($params);
-
-        return $this->parseResponse($this->execute('import -f '.$filepath.' -n '.$name), __FUNCTION__);
+        
+        return $this->parseResponse($this->execute('import -f '.$filepath.' -n '.$name.' '.$command), __FUNCTION__);
     }
 
     /**
