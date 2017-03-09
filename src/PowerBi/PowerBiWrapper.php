@@ -26,6 +26,13 @@ class PowerBiWrapper
     protected $params = [];
 
     /**
+     * Power BI cli server path
+     * 
+     * @var string
+     */
+    protected $command = '';
+
+    /**
      * Init.
      * 
      * @param array $params config params
@@ -39,6 +46,8 @@ class PowerBiWrapper
         }
 
         $command = $this->formatInput($params);
+
+        $this->command = $command;
 
         $this->execute('config '.$command);
     }
@@ -112,7 +121,7 @@ class PowerBiWrapper
      */
     public function reports()
     {
-        return $this->parseResponse($this->execute('get-reports'), __FUNCTION__);
+        return $this->parseResponse($this->execute('get-reports '.$this->command), __FUNCTION__);
     }
 
     /**
