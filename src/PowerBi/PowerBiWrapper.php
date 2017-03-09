@@ -101,7 +101,7 @@ class PowerBiWrapper
      */
     public function datasets()
     {
-        return $this->parseResponse($this->execute('get-datasets'), __FUNCTION__);
+        return $this->parseResponse($this->execute('get-datasets '.$this->command), __FUNCTION__);
     }
 
     /**
@@ -111,7 +111,7 @@ class PowerBiWrapper
      */
     public function deleteDataset($datasetId)
     {
-        return $this->execute('delete-dataset -d '.$datasetId);
+        return $this->execute('delete-dataset '.$this->command.' -d '.$datasetId);
     }
 
     /**
