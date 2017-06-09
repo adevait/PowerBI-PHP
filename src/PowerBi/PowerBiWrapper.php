@@ -142,7 +142,7 @@ class PowerBiWrapper
     {
         $command = $this->formatInput($params);
 
-        if($overwrite){
+        if ($overwrite) {
             $command.=' -o true';
         }
         
@@ -193,12 +193,16 @@ class PowerBiWrapper
      */
     public function formatInput($input)
     {
-        return implode(' ', array_map(function ($v, $k) {
-                return sprintf("%s %s", $k, $v);
-            },
-            $input,
-            array_keys($input)
-        ));
+        return implode(
+            ' ',
+            array_map(
+                function ($v, $k) {
+                    return sprintf("%s %s", $k, $v);
+                },
+                $input,
+                array_keys($input)
+            )
+        );
     }
 
     /**
@@ -218,37 +222,46 @@ class PowerBiWrapper
         }
 
         switch ($output) {
-
             case 'reports':
             case 'datasets':
+                $m = [];
+
                 preg_match_all("/\[ powerbi \] ID: (.*) \|/", $response, $matchesId);
                 preg_match_all("/Name: (.*)/", $response, $matchesName);
-                $m = [];
+
+                if (!isset($matchesId[1]) || !isset($matchesName[1]) || !is_array($matchesName[1])) {
+                    return $m;
+                }
+
                 foreach ($matchesId[1] as $key => $value) {
                     $m[] = ['id'=>$value, 'name' => $matchesName[1][$key]];
                 }
+                
                 return $m;
                 break;
-
             case 'import':
                 preg_match("/\[ powerbi \] Import ID: (.*)/", $response, $matchesId);
+
+                if (!isset($matchesId[1])) {
+                    return [];
+                }
+
                 return [['id' => $matchesId[1]]];
                 break;
-
             case 'createWorkspace':
                 preg_match_all("/\[ powerbi \] Workspace created:(.*)/", $response, $matchesId);
-                return $matchesId[1];
+                return isset($matchesId[1]) ? $matchesId[1] : null;
                 break;
-
             case 'workspaces':
                 // TODO: Fix the RegExp! Doesn't return the first workspace
                 $response = preg_replace('/\[ powerbi \] =+\n(.*)/', '', $response);
                 preg_match_all("/\[ powerbi \] (.*)/", $response, $matchesId);
-                return $matchesId[1];
+                return isset($matchesId[1]) ? $matchesId[1] : null;
                 break;
             case 'createToken':
                 preg_match_all("/\[ powerbi \] Embed Token: (.*)/", $response, $matchesId);
-                return trim(reset($matchesId[1]));
+                $token = isset($matchesId[1]) ? $matchesId[1] : '';
+                return trim(reset($token));
             default:
                 # code...
                 break;
