@@ -226,22 +226,36 @@ class PowerBiWrapper
             case 'datasets':
                 $m = [];
 
-                preg_match_all("/\[ powerbi \] ID: (.*) \|/", $response, $matchesId);
+                preg_match_all("/\[ powerbi \] ID: (.*) |/", $response, $matchesId);
                 preg_match_all("/Name: (.*)/", $response, $matchesName);
 
                 if (!isset($matchesId[1]) || !isset($matchesName[1]) || !is_array($matchesName[1])) {
                     return $m;
                 }
 
-                foreach ($matchesId[1] as $key => $value) {
-                    $m[] = ['id'=>$value, 'name' => $matchesName[1][$key]];
+                $ids = array_values(array_filter($matchesId[1]));
+
+                foreach ($ids as $key => $value) {
+                    
+                    $id = $value;
+                    $name = $matchesName[1][$key];
+
+                    if (strpos($id, ' | ') !== false) {
+                        $id = explode(' | ', $id)[0];
+                    }
+
+                    if (strpos($name, ' | ') !== false) {
+                        $name = explode(' | ', $name)[0];
+                    }
+
+                    $m[] = ['id'=>$id, 'name' => $name];
                 }
                 
                 return $m;
                 break;
             case 'import':
                 preg_match("/\[ powerbi \] Import ID: (.*)/", $response, $matchesId);
-
+                
                 if (!isset($matchesId[1])) {
                     return [];
                 }
